@@ -24,6 +24,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const register = async(name, email, password, passwordConfirm) => {
+        const response = await api.post('/register', { name, email, password, password_confirmation: passwordConfirm });
+        if(isBrowser) {
+            localStorage.setItem('token', response.data.token);
+        }
+        setUser(response.data.user);
+        return response.data.user;
+    }
+
     const logout = async() => {
         try {
             await api.post('/logout');
@@ -58,7 +67,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading, fetchUser }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, fetchUser, register }}>
             {children}
         </AuthContext.Provider>
     );
